@@ -40,7 +40,7 @@ class Product extends Model
 
     public function stockTransactions(): HasMany
     {
-        return $this->hasMany(stockTransaction::class);
+        return $this->hasMany(StockTransaction::class);
     }
 
     public function purchaseItems(): HasMany

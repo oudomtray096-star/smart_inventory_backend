@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Routing\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -16,40 +16,22 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'name' => [
-                'required',
-                'string',
-                'max:100',
-            ],
-
-            'email' => [
-                'required',
-                'email',
-                'max:150',
-                'unique:users,email',
-            ],
-
-            'password' => [
-                'required',
-                'string',
-                'min:8',
-                'confirmed',
-            ],
-
-            'role' => [
-                'nullable',
-                'in:admin,staff',
-            ],
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'role' => 'nullable|in:admin,manager,staff',
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => $validated['password'],
+            'password' => Hash::make($validated['password']),
             'role' => $validated['role'] ?? 'staff',
         ]);
 
-        $token = $user->createToken('inventory-api')->plainTextToken;
+        $token = $user
+            ->createToken('inventory-api')
+            ->plainTextToken;
 
         return response()->json([
             'success' => true,
@@ -92,7 +74,7 @@ class AuthController extends Controller
         ) {
             throw ValidationException::withMessages([
                 'email' => [
-                    'The provided credentials are incorrect.'
+                    'The provided credentials are incorrect.',
                 ],
             ]);
         }
@@ -112,7 +94,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Get the currently authenticated user.
+     * Get authenticated user.
      */
     public function me(Request $request)
     {
@@ -123,7 +105,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Logout current user.
+     * Logout user.
      */
     public function logout(Request $request)
     {
@@ -133,7 +115,7 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Logged out successfully.',
+            'message' => 'Logout successful.',
         ]);
     }
 }
