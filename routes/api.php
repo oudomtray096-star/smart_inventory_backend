@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\PurchaseController;
 // use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\SupplierController;
@@ -12,8 +14,8 @@ use App\Http\Controllers\Api\PurchaseItemController;
 use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\SaleItemController;
 use App\Http\Controllers\Api\StockTransactionController;
-use App\Http\Controllers\ProductController;
 
+use App\Http\Controllers\Api\UserController;
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
@@ -24,6 +26,11 @@ use App\Http\Controllers\ProductController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// 
+
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::apiResource('users', UserController::class);
+});
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -100,4 +107,9 @@ Route::middleware('auth:sanctum')->group(function () {
         'stock-transactions',
         StockTransactionController::class
     );
+     Route::get('/dashboard', [
+        DashboardController::class,
+        'index'
+    ]);
+
 });

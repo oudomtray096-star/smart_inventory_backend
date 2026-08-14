@@ -32,7 +32,7 @@ return new class extends Migration
             $table->integer('quantity')->default(0);
             $table->integer('minimum_stock')->default(5);
 
-            $table->string('image', 255)->nullable();
+            $table->string('image')->nullable();
 
             $table->timestamps();
         });
